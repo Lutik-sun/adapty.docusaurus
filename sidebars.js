@@ -6,7 +6,7 @@ const sidebars = {
     {
       type: 'doc',
       id: 'what-is-adapty',
-      label: "What is Adapty?",
+      label: 'What is Adapty?',
     },
     {
       type: 'category',
