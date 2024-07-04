@@ -34,13 +34,16 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           routeBasePath: '/', // Set this value to '/'
-          // Remove homePageId
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+        },
+        gtag: {
+          trackingID: 'YOUR_GTAG_TRACKING_ID', // Replace with your Google Analytics Measurement ID
+          anonymizeIP: true, // Optional, anonymize IP addresses
         },
       },
     ],
