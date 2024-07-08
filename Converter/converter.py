@@ -47,7 +47,7 @@ def transform_callouts(content):
 # Function to transform tables
 def transform_tables(content):
     table_pattern = re.compile(r'\[block:parameters\]\n({.*?})\n\[/block\]', re.DOTALL)
-
+    
     def convert_markdown_table(table_data):
         num_cols = len([key for key in table_data['data'].keys() if key.startswith('h-')])
         
@@ -167,6 +167,44 @@ metadataTitle: "{metadata_title}"
 def remove_br_tags(content):
     return re.sub(r'<br\s*/?>', '', content)
 
+# Function to transform headings
+def transform_headings(content):
+    def heading_replacer(match):
+        hashes = match.group(1)
+        title = match.group(2)
+        new_hashes = '#' * (len(hashes) + 1) if len(hashes) < 6 else hashes  # Prevents overflow of heading level
+        return f"{new_hashes} {title}"
+
+    # Determine the minimum heading level
+    headings = re.findall(r'^(#{1,6}) ', content, re.MULTILINE)
+    if not headings:
+        return content
+    
+    min_level = min(len(h) for h in headings)
+    if min_level > 2:
+        return content  # No adjustment needed if all headings are already level 2 or greater
+
+    # Increase all heading levels by 2 - min_level
+    new_content = re.sub(r'^(#{1,6}) (.+)$', heading_replacer, content, flags=re.MULTILINE)
+    return new_content
+
+# Function to transform <details> tags
+def transform_details_tags(content):
+    details_pattern = re.compile(r'<details>\s*<summary>(.*?)<\/summary>(.*?)<\/details>', re.DOTALL)
+    
+    def format_details(match):
+        summary = match.group(1).strip()
+        details_content = match.group(2).strip()
+        formatted_details = (
+            "<details>\n"
+            f"   <summary>{summary}</summary>\n\n"
+            f"   {details_content.strip()}\n"
+            "</details>"
+        )
+        return formatted_details
+
+    return details_pattern.sub(format_details, content)
+
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
@@ -175,6 +213,8 @@ def transform_content(content):
     content = transform_links(content)
     content = transform_images(content)
     content = remove_br_tags(content)
+    content = transform_details_tags(content)
+    content = transform_headings(content)
     return content
 
 # Create target folder if it does not exist
