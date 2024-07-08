@@ -47,7 +47,7 @@ def transform_callouts(content):
 # Function to transform tables
 def transform_tables(content):
     table_pattern = re.compile(r'\[block:parameters\]\n({.*?})\n\[/block\]', re.DOTALL)
-    
+
     def convert_markdown_table(table_data):
         num_cols = len([key for key in table_data['data'].keys() if key.startswith('h-')])
         
@@ -56,30 +56,41 @@ def transform_tables(content):
             [table_data['data'].get(f"{r}-{c}", '') for c in range(num_cols)]
             for r in range(table_data['rows'])
         ]
-        
-        # Convert line breaks and lists in cells
+
+        # Convert paragraphs and lists in cells
         def convert_cell(cell):
-            if '\n' in cell:
-                # Convert list items
-                cell = cell.replace('\n', ' ')
-                cell = re.sub(r'(\d+)\.\s', r'<ol><li>\1.</li></ol>', cell)  # Ordered list
-                cell = re.sub(r'-\s', r'<ul><li>-</li></ul>', cell)         # Unordered list
-                cell = cell.replace(' <ol><li>', '<li>').replace('</li></ol> ', '</li>').replace(' <ul><li>', '<li>').replace('</li></ul> ', '</li>')
+            cell = cell.strip()
+
+            # Convert paragraphs
+            paragraphs = cell.split('  \n')
+            if len(paragraphs) > 1:
+                cell = "".join(f"<p>{p.strip()}</p>" for p in paragraphs)
+
+            # Convert ordered lists
+            cell = re.sub(r'\n\s*(\d+)\.\s', r'<ol><li>\1. ', cell)
+            cell = cell.replace('</li>\n', '</li>')
+            cell = cell.replace('</li><ol><li>', '<li>')
+            cell = cell.replace(' <ol><li>', '<ol><li>').replace('</li><ol>', '</li><ol>')
+
+            # Wrap the entire list in <ol> if not already wrapped
+            if '<li>' in cell and not cell.startswith('<ol>'):
+                cell = f'<ol>{cell}</ol>'
+
             return cell
-        
+
         # Build markdown table
         markdown_table = []
         markdown_table.append("| " + " | ".join(headers) + " |")
         markdown_table.append("|" + "|".join(["-" * len(header) for header in headers]) + "|")
         for row in rows:
             markdown_table.append("| " + " | ".join(convert_cell(cell) for cell in row) + " |")
-        
+
         return "\n".join(markdown_table)
 
     def table_replacer(match):
         table_data = json.loads(match.group(1))
         return convert_markdown_table(table_data)
-    
+
     return table_pattern.sub(table_replacer, content)
 
 # Function to transform links
@@ -152,6 +163,10 @@ metadataTitle: "{metadata_title}"
 
     return content
 
+# Function to remove <br> tags
+def remove_br_tags(content):
+    return re.sub(r'<br\s*/?>', '', content)
+
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
@@ -159,6 +174,7 @@ def transform_content(content):
     content = transform_tables(content)
     content = transform_links(content)
     content = transform_images(content)
+    content = remove_br_tags(content)
     return content
 
 # Create target folder if it does not exist
