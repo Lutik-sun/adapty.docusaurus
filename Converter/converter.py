@@ -205,6 +205,10 @@ def transform_details_tags(content):
 
     return details_pattern.sub(format_details, content)
 
+# Function to remove comments
+def remove_comments(content):
+    return re.sub(r'<!---->', '', content)
+
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
@@ -215,6 +219,7 @@ def transform_content(content):
     content = remove_br_tags(content)
     content = transform_details_tags(content)
     content = transform_headings(content)
+    content = remove_comments(content)
     return content
 
 # Create target folder if it does not exist
