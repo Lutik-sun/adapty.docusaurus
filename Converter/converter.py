@@ -209,6 +209,11 @@ def transform_details_tags(content):
 def remove_comments(content):
     return re.sub(r'<!---->', '', content)
 
+# Function to remove glossary item links
+def remove_glossary_links(content):
+    glossary_pattern = re.compile(r'<<glossary:(.*?)>>')
+    return glossary_pattern.sub(r'\1', content)
+
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
@@ -220,6 +225,7 @@ def transform_content(content):
     content = transform_details_tags(content)
     content = transform_headings(content)
     content = remove_comments(content)
+    content = remove_glossary_links(content)  # Add this line to remove glossary links
     return content
 
 # Create target folder if it does not exist
