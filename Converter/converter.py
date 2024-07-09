@@ -156,10 +156,9 @@ title: "{title}"
 description: "{description}"
 metadataTitle: "{metadata_title}"
 ---'''
-        heading = f"# {title}"
-        # Remove the old front matter and replace with the new one plus heading
+        # Remove the old front matter and replace with the new one
         content = content[match.end():].strip()
-        content = new_front_matter + "\n\n" + heading + "\n\n" + content
+        content = new_front_matter + "\n\n" + content
 
     return content
 
@@ -225,7 +224,7 @@ def transform_content(content):
     content = transform_details_tags(content)
     content = transform_headings(content)
     content = remove_comments(content)
-    content = remove_glossary_links(content)  # Add this line to remove glossary links
+    content = remove_glossary_links(content)
     return content
 
 # Create target folder if it does not exist
