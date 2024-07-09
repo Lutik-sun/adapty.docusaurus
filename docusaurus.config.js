@@ -42,7 +42,7 @@ const config = {
           customCss: require.resolve('./src/css/custom.css'),
         },
         gtag: {
-          trackingID: 'YOUR_GTAG_TRACKING_ID', // Replace with your Google Analytics Measurement ID
+          trackingID: 'G-0M1BCR2275', // Replace with your Google Analytics Measurement ID
           anonymizeIP: true, // Optional, anonymize IP addresses
         },
       },
