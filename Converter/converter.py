@@ -162,21 +162,6 @@ metadataTitle: "{metadata_title}"
 
     return content
 
-# Function to add necessary imports for Tabs and TabItem
-def add_imports(content):
-    imports = '''
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-'''
-    front_matter_pattern = re.compile(r'^---\n(.*?)\n---', re.DOTALL)
-    match = front_matter_pattern.search(content)
-    if match:
-        front_matter_end = match.end()
-        content = content[:front_matter_end] + imports + content[front_matter_end:]
-    else:
-        content = imports + content
-    return content
-
 # Function to remove <br> tags
 def remove_br_tags(content):
     return re.sub(r'<br\s*/?>', '', content)
@@ -228,38 +213,9 @@ def remove_glossary_links(content):
     glossary_pattern = re.compile(r'<<glossary:(.*?)>>')
     return glossary_pattern.sub(r'\1', content)
 
-# Function to transform code blocks into tabs
-def transform_code_blocks_to_tabs(content):
-    code_block_pattern = re.compile(r'```(\w+)\n(.*?)```', re.DOTALL)
-    code_blocks = code_block_pattern.findall(content)
-
-    if len(code_blocks) < 2:
-        return content
-
-    tabs_content = ['<Tabs>']
-    for i, (lang, code) in enumerate(code_blocks):
-        default_attr = ' default' if i == 0 else ''
-        tabs_content.append(
-            f'<TabItem value="{lang}" label="{lang}"{default_attr}>\n'
-            f'```{lang}\n{code}```\n'
-            '</TabItem>'
-        )
-    tabs_content.append('</Tabs>\n\n')
-
-    # Remove original code blocks from content
-    content = code_block_pattern.sub('', content)
-
-    # Insert the tabs content at the first occurrence of a code block
-    first_code_block_pos = content.find('```')
-    if first_code_block_pos != -1:
-        content = content[:first_code_block_pos] + "\n".join(tabs_content) + content[first_code_block_pos:]
-
-    return content
-
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
-    content = add_imports(content)
     content = transform_callouts(content)
     content = transform_tables(content)
     content = transform_links(content)
@@ -269,7 +225,6 @@ def transform_content(content):
     content = transform_headings(content)
     content = remove_comments(content)
     content = remove_glossary_links(content)
-    content = transform_code_blocks_to_tabs(content)
     return content
 
 # Create target folder if it does not exist
