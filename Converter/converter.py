@@ -11,7 +11,7 @@ target_folder_path = "/Users/liudmilanemkova/Desktop/Migration result"
 def transform_callouts(content):
     transformed_lines = []
     callout_buffer = []
-    callout_type = None  # To track the type of callout (note, danger, or warning)
+    callout_type = None  # To track the type of callout (note, danger, warning, or info)
 
     for line in content.splitlines():
         if line.startswith('> 📘'):
@@ -35,6 +35,13 @@ def transform_callouts(content):
                 callout_buffer = []
             callout_type = 'warning'
             callout_buffer.append(line[4:].strip())  # Remove '> 🚧' and trim
+        elif line.startswith('> 👍'):
+            if callout_buffer:
+                # Save previous callout buffer as Docusaurus callout
+                transformed_lines.append(f":::{callout_type}\n" + "\n".join(callout_buffer) + "\n:::")
+                callout_buffer = []
+            callout_type = 'info'
+            callout_buffer.append(line[4:].strip())  # Remove '> 👍' and trim
         elif line.startswith('>') and callout_buffer:
             callout_buffer.append(line[2:].strip())  # Remove '> ' and trim
         else:
