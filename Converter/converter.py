@@ -6,6 +6,29 @@ import yaml
 # Define paths
 source_folder_path = "/Users/liudmilanemkova/Desktop/Migration from readme to docusaurus"
 target_folder_path = "/Users/liudmilanemkova/Desktop/Migration result"
+issues_folder_path = "/Users/liudmilanemkova/Desktop/Migration result/With_issues"
+
+# List of files to be placed in the "With_issues" folder
+issues_files = [
+    "getting-started-checklist.md",
+    "sdk-installation-flutter.md",
+    "android-present-paywall-builder-paywalls-in-observer-mode.md",
+    "release-checklist-copy.md",
+    "analytics-funnels",
+    "analytics-retention.md",
+    "adjust-setup.md",
+    "google-cloud-setup.md",
+    "set-up-webhook-integration.md",
+    "analytics-funnels.md",
+    "android-present-paywall-builder-paywalls-in-observer-mode-old.md",
+    "audiences.md",
+    "importing-historical-data-to-adapty-copy.md",
+    "paywall-builder-fetching.md",
+    "server-side-api-specs-old.md",
+    "slack.md",
+    "switch-from-appsflyer-s2s-api-2-to-3.md",
+    "testing-purchases-ios-old.md"
+]
 
 # Function to transform callouts
 def transform_callouts(content):
@@ -129,7 +152,6 @@ def transform_images(content):
         transformed_images = []
         for img in images:
             src = img['image'][0]
-            alt = img['image'][2] or 'Image'
             width = img.get('sizing', 'auto').strip()
             if width[-1].isdigit():  # Append 'px' if the width value is a plain number
                 width += 'px'
@@ -143,7 +165,6 @@ def transform_images(content):
 <div style={{{{ textAlign: '{textAlign}' }}}}>
   <img 
     src="{src}" 
-    alt="{alt}" 
     style={{{{ width: '{width}', border: '{border}' }}}}
   />
 </div>
@@ -241,9 +262,11 @@ def transform_content(content):
     content = remove_glossary_links(content)
     return content
 
-# Create target folder if it does not exist
+# Create target and issues folders if they do not exist
 if not os.path.exists(target_folder_path):
     os.makedirs(target_folder_path)
+if not os.path.exists(issues_folder_path):
+    os.makedirs(issues_folder_path)
 
 # Walk through all files in the source folder and subfolders
 for root, dirs, files in os.walk(source_folder_path):
@@ -251,14 +274,11 @@ for root, dirs, files in os.walk(source_folder_path):
         if file.endswith('.md'):
             # Construct full file paths
             source_file_path = os.path.join(root, file)
-            # Create a relative path to reproduce the folder structure in the target folder
-            relative_path = os.path.relpath(source_file_path, source_folder_path)
-            target_file_path = os.path.join(target_folder_path, relative_path)
-            
-            # Ensure target directory exists
-            target_file_dir = os.path.dirname(target_file_path)
-            if not os.path.exists(target_file_dir):
-                os.makedirs(target_file_dir)
+            # Determine the target file path based on whether it is an issue file or not
+            if file in issues_files:
+                target_file_path = os.path.join(issues_folder_path, file)
+            else:
+                target_file_path = os.path.join(target_folder_path, file)
             
             # Read the source file
             with open(source_file_path, 'r') as source_file:
@@ -271,4 +291,4 @@ for root, dirs, files in os.walk(source_folder_path):
             with open(target_file_path, 'w') as target_file:
                 target_file.write(transformed_content)
 
-print(f"Transformed markdown files have been saved to {target_folder_path}")
+print(f"Transformed markdown files have been saved to {target_folder_path} and {issues_folder_path}")
