@@ -252,6 +252,22 @@ def remove_glossary_links(content):
     glossary_pattern = re.compile(r'<<glossary:(.*?)>>')
     return glossary_pattern.sub(r'\1', content)
 
+# Function to add titles to code blocks
+def add_code_block_titles(content):
+    code_block_pattern = re.compile(r'```(\w+)(.*?)\n(.*?)```', re.DOTALL)
+
+    def code_block_replacer(match):
+        language = match.group(1)
+        title = match.group(2).strip() or language.capitalize()  # Capitalize the title if it starts with a letter
+        if title.startswith("sh"):
+            title = "Shell"
+        elif title == "csharp":
+            title = "C#"
+        code = match.group(3)
+        return f'```{language} title="{title}"\n{code}```'
+
+    return code_block_pattern.sub(code_block_replacer, content)
+
 # Function to transform the entire content
 def transform_content(content):
     content = transform_front_matter(content)
@@ -264,6 +280,7 @@ def transform_content(content):
     content = transform_headings(content)
     content = remove_comments(content)
     content = remove_glossary_links(content)
+    content = add_code_block_titles(content)
     return content
 
 # Create target and issues folders if they do not exist
