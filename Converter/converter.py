@@ -261,7 +261,7 @@ def add_code_block_titles(content):
         title = match.group(2).strip() or language.capitalize()  # Capitalize the title if it starts with a letter
         if title.startswith("sh"):
             title = "Shell"
-        elif title == "csharp":
+        elif title.lower() == "csharp":
             title = "C#"
         code = match.group(3)
         return f'```{language} title="{title}"\n{code}```'
