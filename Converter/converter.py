@@ -152,6 +152,7 @@ def transform_images(content):
         transformed_images = []
         for img in images:
             src = img['image'][0]
+            alt = img['image'][2] or 'Image'
             width = img.get('sizing', 'auto').strip()
             if width[-1].isdigit():  # Append 'px' if the width value is a plain number
                 width += 'px'
@@ -165,6 +166,7 @@ def transform_images(content):
 <div style={{{{ textAlign: '{textAlign}' }}}}>
   <img 
     src="{src}" 
+    alt="{alt}" 
     style={{{{ width: '{width}', border: '{border}' }}}}
   />
 </div>
