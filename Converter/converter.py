@@ -147,12 +147,15 @@ def transform_images(content):
     image_pattern = re.compile(r'\[block:image\]\s*({.*?})\s*\[/block\]', re.DOTALL)
 
     def image_replacer(match):
-        image_data = json.loads(match.group(1))
-        images = image_data['images']
+        try:
+            image_data = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            return match.group(0)  # Skip this block if JSON is malformed
+
+        images = image_data.get('images', [])
         transformed_images = []
         for img in images:
             src = img['image'][0]
-            alt = img['image'][2] or 'Image'
             width = img.get('sizing', 'auto').strip()
             if width[-1].isdigit():  # Append 'px' if the width value is a plain number
                 width += 'px'
@@ -166,7 +169,6 @@ def transform_images(content):
 <div style={{{{ textAlign: '{textAlign}' }}}}>
   <img 
     src="{src}" 
-    alt="{alt}" 
     style={{{{ width: '{width}', border: '{border}' }}}}
   />
 </div>
