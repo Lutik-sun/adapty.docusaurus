@@ -11,16 +11,9 @@ issues_folder_path = "/Users/liudmilanemkova/Desktop/Migration result/With_issue
 # List of files to be placed in the "With_issues" folder
 issues_files = [
     "getting-started-checklist.md",
-    "sdk-installation-flutter.md",
-    "android-present-paywall-builder-paywalls-in-observer-mode.md",
     "release-checklist-copy.md",
-    "analytics-funnels",
     "analytics-retention.md",
-    "adjust-setup.md",
-    "google-cloud-setup.md",
-    "set-up-webhook-integration.md",
     "analytics-funnels.md",
-    "android-present-paywall-builder-paywalls-in-observer-mode-old.md",
     "audiences.md",
     "importing-historical-data-to-adapty-copy.md",
     "paywall-builder-fetching.md",
