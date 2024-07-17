@@ -1,5 +1,5 @@
 ---
-title: "Enable App Store server notifications"
+title: "Enable App Store server notifications 1"
 description: "Learn how to set up App Store server notifications in Adapty to receive real-time updates on refunds and other events directly from the App Store"
 metadataTitle: "How to Enable App Store Server Notifications in Adapty"
 ---

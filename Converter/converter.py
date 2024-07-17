@@ -83,7 +83,7 @@ def transform_callouts(content):
 
 # Function to transform tables
 def transform_tables(content):
-    table_pattern = re.compile(r'\[block:parameters\]\n({.*?})\n\[/block\]', re.DOTALL)
+    table_pattern = re.compile(r'\[block:parameters\]\n?({.*?})\n?\[/block\]', re.DOTALL)
     
     def convert_markdown_table(table_data):
         num_cols = len([key for key in table_data['data'].keys() if key.startswith('h-')])
@@ -177,6 +177,18 @@ def transform_images(content):
         return "\n".join(transformed_images) + "\n\n"  # Ensure it's on separate lines
     
     return image_pattern.sub(image_replacer, content)
+
+# Function to transform code blocks
+def transform_code_blocks(content):
+    code_block_pattern = re.compile(r'```(\w+)\s*(.*?)\n(.*?)```', re.DOTALL)
+    
+    def code_block_replacer(match):
+        language = match.group(1)
+        title = match.group(2).strip() or language.title()
+        code = match.group(3)
+        return f'```{language} title="{title}"\n{code}```'
+    
+    return code_block_pattern.sub(code_block_replacer, content)
 
 # Function to transform front matter
 def transform_front_matter(content):
@@ -275,6 +287,7 @@ def transform_content(content):
     content = transform_tables(content)
     content = transform_links(content)
     content = transform_images(content)
+    content = transform_code_blocks(content)
     content = remove_br_tags(content)
     content = transform_details_tags(content)
     content = transform_headings(content)
