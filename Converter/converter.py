@@ -190,18 +190,6 @@ def transform_images(content):
     
     return image_pattern.sub(image_replacer, content)
 
-# Function to transform code blocks
-def transform_code_blocks(content):
-    code_block_pattern = re.compile(r'```(\w+)\s*(.*?)\n(.*?)```', re.DOTALL)
-    
-    def code_block_replacer(match):
-        language = match.group(1)
-        title = match.group(2).strip() or language.title()
-        code = match.group(3)
-        return f'```{language} title="{title}"\n{code}```'
-    
-    return code_block_pattern.sub(code_block_replacer, content)
-
 # Function to transform front matter
 def transform_front_matter(content):
     front_matter_pattern = re.compile(r'^---\n(.*?)\n---', re.DOTALL)
@@ -290,7 +278,9 @@ def add_code_block_titles(content):
         code = match.group(3)
         return f'```{language} title="{title}"\n{code}```'
 
-    return code_block_pattern.sub(code_block_replacer, content)
+    # Avoid double "title=" in the result
+    content = code_block_pattern.sub(lambda m: code_block_replacer(m).replace('title="title="', 'title="'), content)
+    return content
 
 # Function to transform the entire content
 def transform_content(content):
@@ -299,7 +289,6 @@ def transform_content(content):
     content = transform_tables(content)
     content = transform_links(content)
     content = transform_images(content)
-    content = transform_code_blocks(content)
     content = remove_br_tags(content)
     content = transform_details_tags(content)
     content = transform_headings(content)
