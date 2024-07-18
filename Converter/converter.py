@@ -1,12 +1,21 @@
 import os
+import requests
 import re
 import json
 import yaml
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 # Define paths
 source_folder_path = "/Users/liudmilanemkova/Desktop/Migration from readme to docusaurus"
 target_folder_path = "/Users/liudmilanemkova/Desktop/Migration result"
 issues_folder_path = "/Users/liudmilanemkova/Desktop/Migration result/With_issues"
+img_folder_path = os.path.join(target_folder_path, "img")
+
+# Create target and issues folders if they do not exist
+os.makedirs(target_folder_path, exist_ok=True)
+os.makedirs(issues_folder_path, exist_ok=True)
+os.makedirs(img_folder_path, exist_ok=True)
 
 # List of files to be placed in the "With_issues" folder
 issues_files = [
@@ -22,6 +31,22 @@ issues_files = [
     "switch-from-appsflyer-s2s-api-2-to-3.md",
     "testing-purchases-ios-old.md"
 ]
+
+# Function to download and save images locally
+def save_image_locally(img_url, img_folder_path):
+    img_name = os.path.basename(img_url)
+    img_path = os.path.join(img_folder_path, img_name)
+    if not os.path.exists(img_path):
+        try:
+            response = requests.get(img_url, stream=True)
+            response.raise_for_status()
+            with open(img_path, 'wb') as img_file:
+                for chunk in response.iter_content(1024):
+                    img_file.write(chunk)
+            print(f"Saved image: {img_name}")
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to download {img_url}: {e}")
+    return img_name
 
 # Function to transform callouts
 def transform_callouts(content):
@@ -149,22 +174,16 @@ def transform_images(content):
         transformed_images = []
         for img in images:
             src = img['image'][0]
-            width = img.get('sizing', 'auto').strip()
-            if width[-1].isdigit():  # Append 'px' if the width value is a plain number
-                width += 'px'
-            border = '1px solid grey' if img.get('border') else 'none'
-            align = img.get('align', 'left')
-            textAlign = 'center' if align == 'center' else 'left'
+            img_name = save_image_locally(src, img_folder_path)
+            relative_path = f"./img/{img_name}"
+            alt_text = img.get('caption', 'Example banner').strip()
 
-            # Create the HTML image block with double curly braces for style
+            # Create the HTML image block with the new format
             transformed_images.append(
                 f"""
-<div style={{{{ textAlign: '{textAlign}' }}}}>
-  <img 
-    src="{src}" 
-    style={{{{ width: '{width}', border: '{border}' }}}}
-  />
-</div>
+<img
+  src={{require('{relative_path}').default}}
+/>
 """
             )
         return "\n".join(transformed_images) + "\n\n"  # Ensure it's on separate lines
@@ -288,12 +307,6 @@ def transform_content(content):
     content = remove_glossary_links(content)
     content = add_code_block_titles(content)
     return content
-
-# Create target and issues folders if they do not exist
-if not os.path.exists(target_folder_path):
-    os.makedirs(target_folder_path)
-if not os.path.exists(issues_folder_path):
-    os.makedirs(issues_folder_path)
 
 # Walk through all files in the source folder and subfolders
 for root, dirs, files in os.walk(source_folder_path):
