@@ -178,11 +178,21 @@ def transform_images(content):
             relative_path = f"./img/{img_name}"
             alt_text = img.get('caption', 'Example banner').strip()
 
+            # Determine if the image has a border in the original file
+            border = img.get('border', False)
+            border_style = "1px solid #727272" if border else "none"
+
             # Create the HTML image block with the new format
             transformed_images.append(
                 f"""
 <img
   src={{require('{relative_path}').default}}
+  style={{{{
+    border: '{border_style}', /* border width and color */
+    width: '700px', /* image width */
+    display: 'block', /* for alignment */
+    margin: '0 auto' /* center alignment */
+  }}}}
 />
 """
             )
