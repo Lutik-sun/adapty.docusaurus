@@ -180,10 +180,22 @@ def transform_links(content):
 
     return content
 
-# Updated function to transform adapty links
+# Function to transform adapty links
 def transform_adapty_links(content):
     adapty_link_pattern = re.compile(r'\[(.*?)\]\(https:\/\/docs\.adapty\.io\/docs\/(.*?)\)')
     return adapty_link_pattern.sub(r'[\1](\2)', content)
+
+# Updated function to transform specific links
+def transform_specific_links(content):
+    # Replace links for "adapty-paywall-builder-legacy"
+    specific_link_pattern_legacy = re.compile(r'\[(.*?)\]\(adapty-paywall-builder-legacy\)')
+    content = specific_link_pattern_legacy.sub(r'[\1](../adapty-paywall-builder-legacy)', content)
+    
+    # Replace links for "migration-guide-to-adapty-sdk-v3x-or-later"
+    specific_link_pattern_migration = re.compile(r'\[(.*?)\]\(migration-guide-to-adapty-sdk-v3x-or-later\)')
+    content = specific_link_pattern_migration.sub(r'[\1](migration-to-adapty-sdk-v3)', content)
+
+    return content
 
 # Function to transform images
 def transform_images(content):
@@ -324,6 +336,7 @@ def transform_content(content):
     content = transform_tables(content)
     content = transform_links(content)
     content = transform_adapty_links(content)
+    content = transform_specific_links(content)
     content = transform_images(content)
     content = remove_br_tags(content)
     content = transform_details_tags(content)
