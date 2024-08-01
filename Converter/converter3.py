@@ -8,8 +8,8 @@ from urllib.parse import urljoin
 import shutil
 
 # Define paths
-source_folder_path = "/Users/liudmilanemkova/Downloads/export-project/v2.0"
-target_folder_path = "/Users/liudmilanemkova/Desktop/adapty-docs/versioned_docs/version-2.0"
+source_folder_path = "/Users/liudmilanemkova/Downloads/export-project/v3.0"
+target_folder_path = "/Users/liudmilanemkova/Desktop/adapty-docs/versioned_docs/version-3.0"
 issues_folder_path = "/Users/liudmilanemkova/Desktop/Migration result/With_issues"
 img_folder_path = os.path.join(target_folder_path, "img")
 
