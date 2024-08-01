@@ -182,8 +182,15 @@ def transform_links(content):
 
 # Updated function to transform adapty links
 def transform_adapty_links(content):
+    # For links with v3.0 in the URL
+    adapty_v3_link_pattern = re.compile(r'\[(.*?)\]\(https:\/\/docs\.adapty\.io\/v3\.0\/docs\/(.*?)\)')
+    content = adapty_v3_link_pattern.sub(r'[\1](/3.0/\2)', content)
+    
+    # For other adapty links
     adapty_link_pattern = re.compile(r'\[(.*?)\]\(https:\/\/docs\.adapty\.io\/docs\/(.*?)\)')
-    return adapty_link_pattern.sub(r'[\1](\2)', content)
+    content = adapty_link_pattern.sub(r'[\1](\2)', content)
+    
+    return content
 
 # Function to transform images
 def transform_images(content):
