@@ -37,7 +37,6 @@ folders_to_remove = [
     "Archive",
     "For migration to Docusaurus",
     "Redirectors",
-    "Promo Campaigns"
 ]
 remove_folders(source_folder_path, folders_to_remove)
 
@@ -340,12 +339,71 @@ def transform_content(content):
     content = add_code_block_titles(content)
     return content
 
+# List of pages to skip
+pages_to_skip = [
+    "display-paywalls-in-observer-mode",
+    "ios-sdk-installation",
+    "attribution",
+    "analytics",
+    "migrate-to-google-billing-library-v5",
+    "paywall-builder-getting-started",
+    "introducing-new-paywall-management-system-paywalls-20",
+    "displaying-products",
+    "paywall-builder-presenting",
+    "paywall-builder-events",
+    "paywall-builder-events-flutter",
+    "ios-displaying-products",
+    "android-displaying-products",
+    "flutter-displaying-products",
+    "unity-displaying-products",
+    "audiences",
+    "setting-up-ab-tests-for-observer-mode",
+    "configuring-adapty-sdk-1",
+    "paywall",
+    "paywall-builder-fetching",
+    "cohorts",
+    "paywall-builder-installation",
+    "paywall-builder-installation-ios",
+    "paywall-builder-installation-android",
+    "paywall-builder-installation-flutter",
+    "react-native-installation-1",
+    "paywall-builder-installation-unity",
+    "configuring-adapty-sdk",
+    "ios-configuring",
+    "android-configuring",
+    "flutter-configuring",
+    "react-native-configuring",
+    "android-making-purchases",
+    "paywalls-products-and-placements",
+    "placements-old",
+    "profilescrm-copy",
+    "run-and-stop-ab-test-copy",
+    "adapty-paywall-builder",
+    "android-installation-copy",
+    "identify-users-copy",
+    "ios-installation-copy",
+    "paywalls-products-and-placements",
+    "placements-old",
+    "profilescrm-copy"
+    "run_stop_ab_tests",
+    "unity-configuring"
+]
+
 # Walk through all files in the source folder and subfolders
 for root, dirs, files in os.walk(source_folder_path):
     for file in files:
         if file.endswith('.md'):
+            # Extract the filename without extension
+            filename = os.path.splitext(file)[0]
+            
+            # Skip pages in the pages_to_skip list
+            if filename in pages_to_skip:
+                print(f"Skipping file: {file}")
+                continue
+            
             # Construct full file paths
             source_file_path = os.path.join(root, file)
+            
             # Determine the target file path based on whether it is an issue file or not
             if file in issues_files:
                 target_file_path = os.path.join(issues_folder_path, file)
@@ -364,3 +422,4 @@ for root, dirs, files in os.walk(source_folder_path):
                 target_file.write(transformed_content)
 
 print(f"Transformed markdown files have been saved to {target_folder_path} and {issues_folder_path}")
+
