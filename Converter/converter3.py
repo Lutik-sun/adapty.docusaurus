@@ -347,11 +347,9 @@ def transform_content(content):
 
 # List of pages to skip
 pages_to_skip = [
-    "sdk-installation-ios",
     "paywall-builder-installation-ios",
     "observer-mode-paywalls-ab-tests",
     "display-paywalls-in-observer-mode",
-    "ios-sdk-installation",
     "attribution",
     "analytics",
     "migrate-to-google-billing-library-v5",
