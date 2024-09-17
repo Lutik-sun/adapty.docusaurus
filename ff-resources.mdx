@@ -8,11 +8,13 @@ metadataTitle: ""
 
 All Adapty actions are custom actions for FlutterFlow.
 
-| Custom Action                                     | Description                                                                                                              | Action Arguments                                                                              | Adapty Data Types - Action Output Variable  |     |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- | ------------------------------------------- | --- |
-| activate                                          | Initializes the Adapty SDK                                                                                               | None                                                                                          |                                             |     |
-| <p id="getPaywall">getPaywall</p>                 | Retrieves a paywall. It does not return paywall products. Use the `getPaywallProducts` action to get the actual products | <ul><li>[Placement_ID](placements)</li><li>[Locale](localizations-and-locale-codes)</li></ul> | [AdaptyPaywall](ff-resources#adaptypaywall) |     |
-| <p id="getPaywallProducts">getPaywallProducts</p> | Returns a list of actual paywall products                                                                                | [AdaptyPaywall](ff-resources#adaptypaywall)                                                   |
+| Custom Action                     | Description                                                                                                              | Action Arguments | Adapty Data Types - Action Output Variable |     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------- | ------------------------------------------ | --- |
+| activate                          | Initializes the Adapty SDK                                                                                               | None             |                                            |     |
+| <p id="getPaywall">getPaywall</p> | Retrieves a paywall. It does not return paywall products. Use the `getPaywallProducts` action to get the actual products |                  |                                            |     |
+
+<ul><li>[Placement_ID](placements)</li><li>[Locale](localizations-and-locale-codes)</li></ul>                                                                                                                                                                                                                                                              | [AdaptyPaywall](ff-resources#adaptypaywall)                                                                  |                |
+| <p id="getPaywallProducts">getPaywallProducts</p>                                           | Returns a list of actual paywall products                                                                                                                                                                                                                                                | [AdaptyPaywall](ff-resources#adaptypaywall)
 
 |                                                                                                              |                |
 | <p id="getProductsIntroductoryOfferEligibility">getProductsIntroductoryOfferEligibility</p> | Checks if the user qualifies for an introductory iOS subscription offer                                                                                                                                                                                                                  | [AdaptyPaywallProduct](product)                                                                                                                                                                                                                                                                                                                            | [AdaptyEligibilityEnum](ff-resources#adaptyeligibilityenum)                                                  |                |
@@ -169,7 +171,7 @@ Defines if the user qualifies for an introductory offer for an iOS subscription.
 | Field name    | Description                                                                         |
 | ------------- | ----------------------------------------------------------------------------------- |
 | eligible      | The user is eligible for an intro offer, it is safe to reflect this info in your UI |
-| ineligible    | The user is not eligible to get any offer, you shouldn't present it in your UI      |
+| ineligible    | he user is not eligible to get any offer, you shouldn't present it in your UI       |
 | notApplicable | This product is not configured to have an offer                                     |
 
 ### AdaptyGenderEnum
